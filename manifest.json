@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "addrs",
+  "description": "mail address list copy to clipboard",
+  "version": "0.0.1",
+  "icons": {
+    "64": "icon.png"
+  },
+  "permissions": [
+    "messagesRead",
+    "clipboardWrite"
+  ],
+  "browser_action": {
+    "default_icon": {
+      "64": "icon.png"
+    },
+    "default_title": "addrs",
+    "default_area": "maintoolbar"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
