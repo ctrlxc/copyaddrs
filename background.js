@@ -10,7 +10,9 @@ browser.browserAction.onClicked.addListener(async (_) => {
 
   const text = addrs.join(",")
 
-  toClipboard(text)
+  toClipboard(text).catch((_) => {
+    setError("Copy Failure!")
+  })
 })
 
 function getAddrs(messages) {
@@ -44,7 +46,7 @@ function realAddr(v) {
   return v
 }
 
-function toClipboard(text) {
+async function toClipboard(text) {
   console.log('toClipboard!')
 
   function onCopy(e) {
@@ -57,11 +59,11 @@ function toClipboard(text) {
 
   document.addEventListener("copy", onCopy, true)
 
-  retry(2, 0.2, () => {
+  const p = retry(2, 0.2, () => {
     return document.execCommand("copy") // may be false if opened thunderbird's debugger
-  }).catch((_) => {
-    setError("Copy Failure!")
   })
+
+  return p
 }
 
 async function retry(num, sec, callback) {
