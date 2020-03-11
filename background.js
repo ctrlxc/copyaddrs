@@ -49,32 +49,37 @@ function realAddr(v) {
 async function toClipboard(text) {
   console.log('toClipboard!')
 
-  function onCopy(e) {
-    console.log('onCopy!')
-    document.removeEventListener("copy", onCopy, true)
-    e.stopImmediatePropagation()
-    e.preventDefault()
-    e.clipboardData.setData("text/plain", text)
+  function onCopy(ev) {
+    console.log(`onCopy! ${text}`)
+    document.removeEventListener("copy", onCopy)
+    ev.stopImmediatePropagation()
+    ev.preventDefault()
+    ev.clipboardData.setData("text/plain", text)
   }
 
-  document.addEventListener("copy", onCopy, true)
-
-  const p = retry(2, 0.2, () => {
+  document.addEventListener("copy", onCopy)
+  
+  return retry(2, 0.1, () => {
     return document.execCommand("copy") // may be false if opened thunderbird's debugger
+  }).catch((e) => {
+    document.removeEventListener("copy", onCopy)
+    throw e
   })
-
-  return p
 }
 
 async function retry(num, sec, callback) {
   let b = callback()
 
-  for ( let i = 0; !b && i < num; i++ ) {
+  for (let i = 0; !b && i < num; i++) {
     console.log(`retry! [${i+1}/${num}]`)
     b = await timer(sec, callback)
   }
 
-  return b ? Promise.resolve() : Promise.reject()
+  if (!b) {
+    throw new Error("retry failure")
+  }
+
+  return b
 }
 
 async function timer(sec, callback) {
