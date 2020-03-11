@@ -9,6 +9,7 @@ browser.browserAction.onClicked.addListener(async (_) => {
   console.log(addrs)
 
   const text = addrs.join(",")
+
   toClipboard(text)
 })
 
@@ -63,10 +64,15 @@ function toClipboard(text) {
   })
 }
 
-function setError(msg) {
-  console.log(`[error] ${msg}`)
-  browser.browserAction.setPopup({popup: `error/index.html?error=${msg}`})
-  browser.browserAction.setBadgeText({text: "1"})
+async function retry(num, sec, callback) {
+  let b = callback()
+
+  for ( let i = 0; !b && i < num; i++ ) {
+    console.log(`retry! [${i+1}/${num}]`)
+    b = await timer(sec, callback)
+  }
+
+  return b ? Promise.resolve() : Promise.reject()
 }
 
 async function timer(sec, callback) {
@@ -78,15 +84,10 @@ async function timer(sec, callback) {
   })
 }
 
-async function retry(num, sec, callback) {
-  let b = callback()
-
-  for ( let i = 0; !b && i < num; i++ ) {
-    console.log(`retry! [${i+1}/${num}]`)
-    b = await timer(sec, callback)
-  }
-
-  return b ? Promise.resolve() : Promise.reject()
+function setError(msg) {
+  console.log(`[error] ${msg}`)
+  browser.browserAction.setPopup({popup: `error/index.html?error=${msg}`})
+  browser.browserAction.setBadgeText({text: "1"})
 }
 
 // [for test]
