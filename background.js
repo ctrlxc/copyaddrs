@@ -59,14 +59,14 @@ function toClipboard(text) {
   retry(2, 0.2, () => {
     return document.execCommand("copy") // may be false if opened thunderbird's debugger
   }).catch((_) => {
-    console.log("copy failure!")
-    setError(true)
+    setError("Copy Failure!")
   })
 }
 
-function setError(e) {
-  browser.browserAction.setPopup({popup: e ? "error/index.html" : null})
-  browser.browserAction.setBadgeText({text: e ? "1" : null})
+function setError(msg) {
+  console.log(`[error] ${msg}`)
+  browser.browserAction.setPopup({popup: `error/index.html?error=${msg}`})
+  browser.browserAction.setBadgeText({text: "1"})
 }
 
 async function timer(sec, callback) {
