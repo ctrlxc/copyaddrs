@@ -2,7 +2,7 @@ browser.browserAction.onClicked.addListener(async (_) => {
   const msg = await browser.mailTabs.getSelectedMessages()
 
   if (msg.messages.length === 0) {
-    return;
+    return
   }
 
   const addrs = getAddrs(msg.messages)
