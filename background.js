@@ -1,7 +1,6 @@
 browser.browserAction.onClicked.addListener(async (_) => {
   const msg = await browser.mailTabs.getSelectedMessages()
-  // const msg = {messages: [{author: 1, recipients: [2], ccList: [3], bccList: [4]}]}
-  console.log(msg)
+
   if (msg.messages.length === 0) {
     return;
   }
@@ -10,12 +9,11 @@ browser.browserAction.onClicked.addListener(async (_) => {
   console.log(addrs)
 
   const text = addrs.join(",")
-
   toClipboard(text)
 })
 
 function getAddrs(messages) {
-  var addrs = []
+  let addrs = []
 
   for (const m of messages) {
     addrs = addrs.concat([
@@ -41,6 +39,53 @@ function toClipboard(text) {
   }
 
   document.addEventListener("copy", onCopy, true)
-  document.execCommand("copy")
+  const b = document.execCommand("copy") // may be false if opened thunderbird's debugger
+
+  if (b) {
+    return
+  }
+
+  retryTimer(5, 0.2, () => {
+    console.log("retry copy")
+    return document.execCommand("copy")
+  }).catch((_) => {
+    console.log("copy failture!")
+    setError(true)
+  })
 }
 
+function setError(e) {
+  browser.browserAction.setPopup({popup: e ? "error/index.html" : null})
+  browser.browserAction.setBadgeText({text: e ? "1" : null})
+}
+
+async function timer(sec, callback) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const b = callback()
+      resolve(b)
+    }, sec * 1000)
+  })
+}
+
+async function retryTimer(num, sec, callback) {
+  let b = false
+  for ( let i = 0; i < num; i++ ) {
+    b = await timer(sec, callback)
+    if (b) break
+  }
+
+  return b ? Promise.resolve() : Promise.reject()
+}
+
+// [for test]
+// browser.messageDisplay.onMessageDisplayed.addListener(async (_tabId, message) => {
+//   console.log(message)
+
+//   const addrs = getAddrs([message])
+//   console.log(addrs)
+
+//   const text = addrs.join(",")
+
+//   toClipboard(text)
+// })
