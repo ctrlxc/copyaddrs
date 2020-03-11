@@ -13,43 +13,53 @@ browser.browserAction.onClicked.addListener(async (_) => {
 })
 
 function getAddrs(messages) {
-  let addrs = []
+  let addrs = new Map() // no duplication address
 
   for (const m of messages) {
-    addrs = addrs.concat([
-      ...[m.author],
+    const addrsInMessage = [
+      m.author,
       ...m.recipients,
       ...m.ccList,
       ...m.bccList,
-    ])
+    ]
+
+    for (v of addrsInMessage) {
+      const k = realAddr(v)
+      addrs.set(k, v)
+    }
   }
 
-  return [...new Set(addrs)]
+  return Array.from(addrs.values())
+}
+
+function realAddr(v) {
+  const regex = /<?([^\s]+@[^\s>]+)>$/
+  const m = v.match(regex)
+
+  if ( m && m.length > 1 ) {
+    return m[1]
+  }
+
+  return v
 }
 
 function toClipboard(text) {
   console.log('toClipboard!')
 
   function onCopy(e) {
-      console.log('onCopy!')
-      document.removeEventListener("copy", onCopy, true)
-      e.stopImmediatePropagation()
-      e.preventDefault()
-      e.clipboardData.setData("text/plain", text)
+    console.log('onCopy!')
+    document.removeEventListener("copy", onCopy, true)
+    e.stopImmediatePropagation()
+    e.preventDefault()
+    e.clipboardData.setData("text/plain", text)
   }
 
   document.addEventListener("copy", onCopy, true)
-  const b = document.execCommand("copy") // may be false if opened thunderbird's debugger
 
-  if (b) {
-    return
-  }
-
-  retryTimer(5, 0.2, () => {
-    console.log("retry copy")
-    return document.execCommand("copy")
+  retry(2, 0.2, () => {
+    return document.execCommand("copy") // may be false if opened thunderbird's debugger
   }).catch((_) => {
-    console.log("copy failture!")
+    console.log("copy failure!")
     setError(true)
   })
 }
@@ -68,11 +78,12 @@ async function timer(sec, callback) {
   })
 }
 
-async function retryTimer(num, sec, callback) {
-  let b = false
-  for ( let i = 0; i < num; i++ ) {
+async function retry(num, sec, callback) {
+  let b = callback()
+
+  for ( let i = 0; !b && i < num; i++ ) {
+    console.log(`retry! [${i+1}/${num}]`)
     b = await timer(sec, callback)
-    if (b) break
   }
 
   return b ? Promise.resolve() : Promise.reject()

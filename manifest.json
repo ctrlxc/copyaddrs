@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "addrs",
-  "description": "mail address list copy to clipboard",
+  "name": "Copy Address",
+  "description": "mail address copy to clipboard",
   "version": "0.0.1",
   "icons": {
-    "64": "icon.png"
+    "24": "icon.svg"
   },
   "permissions": [
     "messagesRead",
@@ -13,9 +13,9 @@
   ],
   "browser_action": {
     "default_icon": {
-      "64": "icon.png"
+      "24": "icon.svg"
     },
-    "default_title": "addrs",
+    "default_title": "Copy Address",
     "default_area": "maintoolbar"
   },
   "background": {
