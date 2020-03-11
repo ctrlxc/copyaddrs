@@ -23,7 +23,7 @@ function getAddrs(messages) {
       ...m.bccList,
     ]
 
-    for (v of addrsInMessage) {
+    for (const v of addrsInMessage) {
       const k = realAddr(v)
       addrs.set(k, v)
     }
