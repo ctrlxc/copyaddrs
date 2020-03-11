@@ -33,7 +33,7 @@ function getAddrs(messages) {
 }
 
 function realAddr(v) {
-  const regex = /<?([^\s]+@[^\s>]+)>$/
+  const regex = /<?([^\s]+@[^\s>]+)>?$/
   const m = v.match(regex)
 
   if ( m && m.length > 1 ) {
