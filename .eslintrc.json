@@ -12,9 +12,9 @@
     "plugin:prettier/recommended"
   ],
   "plugins": [
-      "mozilla",
-      "prettier"
-    ],
+    "mozilla",
+    "prettier"
+  ],
   "parserOptions": {
     "ecmaVersion": 2019
   },
