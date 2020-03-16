@@ -9,7 +9,10 @@
   "permissions": [
     "messagesRead",
     "clipboardWrite",
-    "clipboardRead"
+    "clipboardRead",
+    "activeTab",
+    "tabs",
+    "tabHide"
   ],
   "browser_action": {
     "default_icon": {

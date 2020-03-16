@@ -1,21 +1,38 @@
-browser.browserAction.onClicked.addListener(async () => {
-  const msg = await browser.mailTabs.getSelectedMessages()
+// browser.browserAction.onClicked.addListener(async () => {
+//   const msg = await browser.mailTabs.getSelectedMessages()
+//   toCopyHelper(msg.messages)
+// })
 
-  if (msg.messages.length === 0) {
+// browser.mailTabs.onSelectedMessagesChanged.addListener(async () => {
+//   const msg = await browser.mailTabs.getSelectedMessages()
+//   toCopyHelper(msg.messages)
+// })
+
+browser.messageDisplay.onMessageDisplayed.addListener(
+  async (_tabId, message) => {
+    toCopyHelper([message])
+  }
+)
+
+async function toCopyHelper(
+  messages: browser.messages.MessageHeader[]
+): Promise<void> {
+  const addrs = getAddrs(messages)
+
+  if (addrs.length === 0) {
     return
   }
 
-  const addrs = getAddrs(msg.messages)
-  console.log(addrs)
+  // console.log(addrs)
 
   const text = addrs.join(',')
 
-  toClipboard(text).catch(() => {
-    setError('Copy Failure!')
+  browser.browserAction.setPopup({
+    popup: `copyhelper/index.html?text=${text}`
   })
-})
+}
 
-function getAddrs(messages: browser.mailTabs.MessageHeader[]): string[] {
+function getAddrs(messages: browser.messages.MessageHeader[]): string[] {
   const addrs = new Map<string, string>() // no duplication address
 
   for (const m of messages) {
@@ -98,21 +115,3 @@ async function timer(sec: number, callback: () => boolean): Promise<boolean> {
     }, sec * 1000)
   })
 }
-
-function setError(msg: string): void {
-  console.log(`[error] ${msg}`)
-  browser.browserAction.setPopup({ popup: `error/index.html?error=${msg}` })
-  browser.browserAction.setBadgeText({ text: '1' })
-}
-
-// [for test]
-// browser.messageDisplay.onMessageDisplayed.addListener(async (_tabId, message) => {
-//   console.log(message)
-
-//   const addrs = getAddrs([message])
-//   console.log(addrs)
-
-//   const text = addrs.join(",")
-
-//   toClipboard(text)
-// })
