@@ -1,9 +1,15 @@
 #message {
-  font-style: italic;
+  font-style: bold;
   font-size: medium;
-  color: dimgray;
+  color: #555555;
 }
 
-/* #text {
+#submessage {
+  font-style: italic;
+  font-size: 10px;
+  color: gray;
+}
+
+#text {
   display: none;
-} */
+}

@@ -1,6 +1,23 @@
 // browser.browserAction.onClicked.addListener(async () => {
 //   const msg = await browser.mailTabs.getSelectedMessages()
-//   toCopyHelper(msg.messages)
+//   const text = getAddrs(msg.messages).join(',')
+
+//   const url = browser.extension.getURL(`copyhelper/index.html?text=${text}`)
+
+//   browser.windows
+//     .create({
+//       url,
+//       type: 'popup',
+//       height: 200,
+//       width: 200
+//     })
+//     .then((w) => {
+//       timer(0.5, () => {
+//         if (w.id) {
+//           browser.windows.remove(w.id)
+//         }
+//       })
+//     })
 // })
 
 // browser.mailTabs.onSelectedMessagesChanged.addListener(async () => {
@@ -17,15 +34,8 @@ browser.messageDisplay.onMessageDisplayed.addListener(
 async function toCopyHelper(
   messages: browser.messages.MessageHeader[]
 ): Promise<void> {
-  const addrs = getAddrs(messages)
-
-  if (addrs.length === 0) {
-    return
-  }
-
-  // console.log(addrs)
-
-  const text = addrs.join(',')
+  const text = getAddrs(messages).join(',')
+  console.log(`selected => ${text}`)
 
   browser.browserAction.setPopup({
     popup: `copyhelper/index.html?text=${text}`
@@ -107,11 +117,11 @@ async function retry(
   return b
 }
 
-async function timer(sec: number, callback: () => boolean): Promise<boolean> {
+async function timer<T>(sec: number, callback: () => T): Promise<T> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const b = callback()
-      resolve(b)
+      const r = callback()
+      resolve(r)
     }, sec * 1000)
   })
 }
