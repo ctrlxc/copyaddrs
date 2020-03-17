@@ -15,10 +15,7 @@
   },
   "permissions": [
     "messagesRead",
-    "clipboardWrite",
-    "activeTab",
-    "tabs",
-    "tabHide"
+    "clipboardWrite"
   ],
   "browser_action": {
     "default_icon": {
@@ -28,8 +25,6 @@
     "default_area": "maintoolbar"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "page": "background.html"
   }
 }
