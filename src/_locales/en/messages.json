@@ -12,11 +12,11 @@
     "description": ""
   },
   "successCopy": {
-    "message": "Email address copied",
+    "message": "Email address copied🌈",
     "description": ""
   },
   "failureCopy": {
-    "message": "Email address copy failed",
+    "message": "Email address copy failed😱",
     "description": ""
   }
 }
