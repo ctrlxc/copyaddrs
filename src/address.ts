@@ -1,4 +1,8 @@
-export function getAddrs(messages: browser.messages.MessageHeader[]): string[] {
+export function getAddrs(
+  messages_: browser.messages.MessageHeader | browser.messages.MessageHeader[]
+): string[] {
+  const messages = Array.isArray(messages_) ? messages_ : [messages_]
+
   const addrs = new Map<string, string>() // no duplication address
 
   for (const m of messages) {

@@ -55,7 +55,6 @@ function setMessage(success: boolean, text: string | void): void {
 
 function clearPopup(): void {
   browser.browserAction.setPopup({ popup: null })
-  // browser.browserAction.setBadgeText({ text: null })
 }
 
 async function main(): Promise<void> {
