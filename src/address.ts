@@ -10,7 +10,7 @@ export function getAddrs(
       m.author,
       ...m.recipients,
       ...m.ccList,
-      ...m.bccList
+      ...m.bccList,
     ]
 
     for (const v of addrsInMessage) {

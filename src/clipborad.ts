@@ -2,7 +2,7 @@ import { retry } from './util.js'
 
 export default async function toClipboardPopup(text: string): Promise<void> {
   browser.browserAction.setPopup({
-    popup: `clipboard-popup/index.html?text=${text}`
+    popup: `clipboard-popup/index.html?text=${text}`,
   })
 }
 
