@@ -62,8 +62,11 @@ async function main(): Promise<void> {
     const text = await getCopyText()
     const success = await setClipboard(text)
     setMessage(success, text)
-  } catch (e) {
-    console.log(e.message)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log(e.message)
+    }
+
     setMessage(false)
   } finally {
     clearPopup()
