@@ -49,6 +49,6 @@
     "rimraf": "^3.0.2",
     "thunderbird-web-ext-types": "^1.0.0",
     "typescript": "^4.4.4",
-    "web-ext": "^6.5.0"
+    "web-ext": "^7.5.0"
   }
 }
